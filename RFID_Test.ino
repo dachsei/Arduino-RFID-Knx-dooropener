@@ -1,14 +1,3 @@
-/*
- * Pin layout should be as follows:
- * Signal     Pin              Pin               Pin
- *            Arduino Uno      Arduino Mega      MFRC522 board
- * ------------------------------------------------------------
- * Reset      9                5                 RST
- * SPI SS     10               53                SDA
- * SPI MOSI   11               51                MOSI
- * SPI MISO   12               50                MISO
- * SPI SCK    13               52                SCK
- */
 #include <SPI.h>
 #include <MFRC522.h>
 #include <KnxTpUart.h>
@@ -16,10 +5,15 @@
 
 #define SS_PIN 10
 #define RST_PIN 9
-long programmTime = 5000;
+#define ID_GA "0/7/0"
+#define PROGRAM_GA "0/7/1"
+#define DEBUG_GA "0/7/2"    //GA to write Debug Text to
 
+long programmTime = 5000;
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 KnxTpUart knx(&Serial, "15.15.19");
+
+
 volatile bool programm = false;
 byte newId[16];
 
@@ -31,7 +25,7 @@ void setup()
   Serial.begin(19200);
   UCSR0C = UCSR0C | B00100000; // Even Parity
   knx.uartReset();
-  knx.addListenGroupAddress("0/7/1");
+  knx.addListenGroupAddress(PROGRAM_GA);
 }
 
 void loop()
@@ -40,7 +34,9 @@ void loop()
 
   if(programm) {
     if(!programmId()) {
-      knx.groupWrite14ByteText("0/7/2", "Timeout");
+      #ifdef DEBUG_GA
+      knx.groupWrite14ByteText(DEBUG_GA, "Timeout");
+      #endif
     }
     programm = false;
   }
@@ -59,7 +55,7 @@ void loop()
   byte size = sizeof(buffer);
   if(mfrc522.MIFARE_Read(6, buffer, &size) == MFRC522::STATUS_OK) {
     buffer[16] = '\0';
-    knx.groupWrite14ByteText("0/7/0", (const char*)buffer);
+    knx.groupWrite14ByteText(ID_GA, (const char*)buffer);
   }
 
   mfrc522.PICC_HaltA();
@@ -91,7 +87,9 @@ bool programmId()
         if(mfrc522.MIFARE_Read(7, buffer, &size) == MFRC522::STATUS_OK) {
           memcpy(buffer, key.keyByte, 6);
           if(mfrc522.MIFARE_Write(7, buffer, 16) == MFRC522::STATUS_OK) {
-            knx.groupWrite14ByteText("0/7/2", "Neuer Tag");
+            #ifdef DEBUG_GA
+            knx.groupWrite14ByteText(DEBUG_GA, "Neuer Tag");
+            #endif
             /*Serial.println("Fresh Card, programmed Key_A");
             printArray(buffer, 16);*/
           }
@@ -100,7 +98,9 @@ bool programmId()
     }
     //Authenticated Card
     if(mfrc522.MIFARE_Write(6, newId, 16) == MFRC522::STATUS_OK) {
-      knx.groupWrite14ByteText("0/7/2", "Program. OK");
+      #ifdef DEBUG_GA
+      knx.groupWrite14ByteText(DEBUG_GA, "Program. OK");
+      #endif
       mfrc522.PICC_HaltA();
       mfrc522.PCD_StopCrypto1();
       return true;
@@ -124,7 +124,7 @@ void serialEvent()
       String(0 + telegram->getTargetSubGroup());
 
     if (telegram->getCommand() == KNX_COMMAND_WRITE) {
-      if (target == "0/7/1") {
+      if (target == PROGRAM_GA) {
         memset(newId, 0, 16);
         String knxId = telegram->get14ByteValue();
         for(byte i = 0; i < knxId.length(); ++i) {
