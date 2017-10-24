@@ -42,6 +42,11 @@ Beispiel für 4 Leser:
 | Garage links      | 0/0/255 | 0/0/254     | 0/0/253  | 0/0/3      |
 | Garage rechts     | 0/0/255 | 0/0/254     | 0/0/253  | 0/0/3      |
 
+## Logik in EDOMI
+![Beispiel](EDOMI_example.jpg)
+
+Es ist empfohlen die Logik auf mehrere Seiten zu verteilen, da der Editor bei zu vielen Logikbausteinen in einer Seite recht langsam wird. Die "Leitungen" kann man dabei durch interne KOs ersetzen.
+
 ## Allg. Ablauf/Verschaltung in Edomi
 Ein Transponder wird an einen Leser gehalten. Der Arduino liest seine Transpondernummer aus und gibt sie an den Bus weiter, sodass sie schließlich in Edomi landet. Dabei ist die Gruppenadresse am LBS 19000863 mit z.B. Eingang 1 verbunden. Der Ausgang 1 dieses LBS´s gibt dann eine 1 aus, A2 bis A6 eine 0. Dieser Ausgang ist (geg. per internem KO, z.B. "Leser 1 aktiv") mit Eingang 1 des entsprechenden LBS (19000865, z.B. Berechtigungen Leser 1: Haustüre) zu verbinden. A7 reicht die Transpondernummer einfach durch. Dabei werden die Transpondernummer aller Leser auf ein gemeinsames internes KO zusammengefasst. Dieses ist mit **allen** Transponder-Identifikation-LBS´s (19000964, Eingang 3) zu verknüpfen. Dieser Baustein ist **maximal einmal** zu verwenden.
 
