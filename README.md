@@ -31,6 +31,7 @@ Der RST Pin wurde geändert, damit man die linke Pinleiste weglassen kann.
 | 13          | SCK          |
 
 ## Konfiguration Arduino
+Es wird die Arduino MFRC522 Bibliothek und die [KnxTpUart von Thorsten Gehrig](https://bitbucket.org/thorstengehrig/arduino-tpuart-knx-user-forum/) benötigt.
 Für maximale Sicherheit sollte man den key in keys.h auf ein eigenes Passwort ändern.
 Die Gruppenadressen und Hardwareadresse müssen im Arduino Sketch angepasst werden. Die Hardwareadresse muss eindeutig sein, weil sich sonst Fehler ergeben, wenn 2 Leser gleichzeitig benutzt werden. SYNC_GA (DPT 1.002), WRITE_OK_GA (DPT 1.002) und NEWID_GA (DPT 16.000) sind für alle Leser gleich. READTAG_GA (DPT 16.000) sollte pro Tür eindeutig sein (Bei 2 Lesern für dieselbe Tür kann man auch die selbe GA verwenden). Es ist empfehlenswert, in der ETS pro Leser eine entsprechende Dummy-Applikation einzufügen.
 Beispiel für 4 Leser:
