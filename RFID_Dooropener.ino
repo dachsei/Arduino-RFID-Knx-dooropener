@@ -29,14 +29,9 @@ void setup()
   knx.addListenGroupAddress(SYNC_GA);
   knx.addListenGroupAddress(NEWID_GA);
 }
-int sent = 0;
 
 void loop()
 {
-  if(millis() > 1000 && sent == 0) {
-    knx.groupWrite14ByteText("0/7/99", "asdf");
-    sent = 1;
-  }
   stateFunc();
 }
 
