@@ -43,6 +43,9 @@ Beispiel für 4 Leser:
 | Garage links      | 0/0/255 | 0/0/254     | 0/0/253  | 0/0/3      |
 | Garage rechts     | 0/0/255 | 0/0/254     | 0/0/253  | 0/0/3      |
 
+## Neue Tags erstellen
+Neue Tags müssen vor der Verwendung erst programmiert werden. Dazu einfach den Programmer Sketch auf den Arduino laden und die Tags an den Leser halten. Danach wird die standard Transpondernummer (leerer String) und das Password gesetzt. Falls erfolgreich leuchtet die eingebaute LED für 500ms.
+
 ## Logik in EDOMI
 ![Beispiel](EDOMI_example.jpg)
 
