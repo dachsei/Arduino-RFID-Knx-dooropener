@@ -56,7 +56,7 @@ void readSyncronized()
 {
   char buffer[18];
   byte size = sizeof(buffer);
-  if(mfrc522.MIFARE_Read(6, buffer, &size) == MFRC522::STATUS_OK) {
+  if(mfrc522.MIFARE_Read(6, reinterpret_cast<byte*>(buffer), &size) == MFRC522::STATUS_OK) {
     buffer[16] = '\0';
     knx.groupWrite14ByteText(READTAG_GA, buffer);
     //Serial.print("Tag read: ");
@@ -84,7 +84,7 @@ void waitForNewId()
 
 void programNewId()
 {
-  if(mfrc522.MIFARE_Write(6, newId, 16) == MFRC522::STATUS_OK) {
+  if(mfrc522.MIFARE_Write(6, reinterpret_cast<byte*>(newId), 16) == MFRC522::STATUS_OK) {
     knx.groupWriteBool(WRITE_OK_GA, true);
     //Serial.print("Write erfolgreich: ");
     //Serial.println(newId);
@@ -149,4 +149,3 @@ void serialEvent()
     }
   }
 }
-
